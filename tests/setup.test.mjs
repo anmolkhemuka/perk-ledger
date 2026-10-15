@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialData,syncPeriods,currentPeriod,validateData,totals,reviewIssues,periodLabel,saveData,loadData} from '../core.mjs';
-import {templateDraft,applyTemplates,convertCalendar,setupIssues,eligibleBenefits} from '../setup.mjs';
+import {templateDraft,applyTemplates,convertCalendar,setupIssues,eligibleBenefits,setCardBenefits} from '../setup.mjs';
 const date='2026-10-15';
 function configured(){const d=initialData(),templates=templateDraft(d);for(const t of templates){t.enabled=true;t.allowance=2;}applyTemplates(d,templates,d.cards.map(c=>c.id),date);return d;}
 function issued(d,b,status='claimed',extra={}){const p=currentPeriod(d,b,date);return {id:crypto.randomUUID(),periodId:p.id,cardId:b.cardId,benefitId:b.id,status,outcome:status==='sold'?'sold':null,value:0,faceValue:null,useValue:null,sale:status==='sold'?1100:0,received:status==='sold'?1100:0,option:'Spa',provider:'',recipient:'',claimDate:date,outcomeDate:status==='sold'?date:'',receivedDate:status==='sold'?date:'',expiry:'',code:'TEST-ONLY',notes:'',legacy:false,...extra};}
@@ -16,3 +16,12 @@ test('v3 restoration retains shared settings, overrides, calendar transitions, n
 test('invalid template backups rejected without changing data',()=>{const d=configured();for(const mutate of [x=>x.templates[0].allowance=null,x=>x.templates[0].value=-1,x=>x.templates.push(x.templates[0]),x=>x.templates[0].frequency='monthly']){const input=structuredClone(d);mutate(input);assert.throws(()=>validateData(input));}assert.equal(d.templates[0].allowance,2);});
 test('retiring a conflicting rule never releases its already issued units or creates a replacement entitlement',()=>{const d=configured(),b=d.benefits[0];d.records.push(issued(d,b));b.retired=true;const before=d.benefits.length;applyTemplates(d,d.templates,[b.cardId],date);assert.equal(d.benefits.length,before);const other={...b,id:crypto.randomUUID(),retired:false,allowance:1};d.benefits.push(other);syncPeriods(d,date);assert.ok(!eligibleBenefits(d,'spa',date).includes(other));assert.equal(d.records.length,1);});
 test('acknowledging an old unpaid sale clears only its one-time review, never its unpaid amount',()=>{const d=configured();const r=issued(d,d.benefits[0],'sold',{received:300,paymentReviewed:true});d.records.push(r);const restored=validateData(d);assert.ok(!reviewIssues(restored.records[0]).some(x=>x.includes('unpaid')));assert.equal(totals(restored,date).received,300);assert.equal(totals(restored,date).pending,800);});
+
+test('card benefit switches preserve history, snapshots, other cards and restore the same entitlement',()=>{
+ const d=configured(),b=d.benefits[0],p=currentPeriod(d,b,date);d.records.push(issued(d,b,'sold'));
+ const before=structuredClone(d),other=d.benefits.filter(x=>x.cardId!==b.cardId);
+ setCardBenefits(d,b.cardId,d.benefits.filter(x=>x.cardId===b.cardId&&x.id!==b.id).map(x=>x.id),[],date);
+ assert.equal(b.retired,true);assert.deepEqual(d.records,before.records);assert.deepEqual(d.periods,before.periods);assert.deepEqual(d.templates,before.templates);assert.deepEqual(d.benefits.filter(x=>x.cardId!==b.cardId),other);assert.equal(totals(d,date).received,1100);
+ applyTemplates(d,d.templates,[b.cardId],date);assert.equal(d.benefits.length,before.benefits.length);assert.equal(b.retired,true);
+ setCardBenefits(d,b.cardId,d.benefits.filter(x=>x.cardId===b.cardId).map(x=>x.id),[],date);assert.equal(b.retired,false);assert.equal(currentPeriod(d,b,date).id,p.id);assert.deepEqual(d.records,before.records);assert.doesNotThrow(()=>validateData(d));
+});

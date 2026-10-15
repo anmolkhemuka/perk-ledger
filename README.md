@@ -24,6 +24,10 @@ Historical allowances never change. Existing rules differing from one remain lab
 
 Conflicting rules are preserved, flagged and excluded from new-request availability until reviewed. Retiring an old rule retains history and never releases already-issued overlapping units into a replacement.
 
+## Edit a card
+
+Edit card combines cardholder details, active benefit switches and expandable fee settings. Card artwork/type is selected only when adding a card. Switch a benefit off to stop new requests while preserving history, totals and issued vouchers; switch it back on to restore the same ID and period allowance. Missing shared benefits can be added here too. Shared setup manages defaults; deselecting a template does not remove existing card benefits. Payments and fee history remain accessible from the wallet.
+
 ## Portal → voucher → outcome
 
 The Benefits view groups categories into compact card rows labelled with their actual quarter/year. Financial totals and workflow counts are separate.

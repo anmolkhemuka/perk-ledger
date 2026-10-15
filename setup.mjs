@@ -30,3 +30,12 @@ export function applyTemplates(data,templates,cardIds,date=today()){
  syncPeriods(data,date);return data;
 }
 export function eligibleBenefits(data,category,date=today()){return data.benefits.filter(b=>!b.retired&&trackingCategory(b)===category&&data.benefits.filter(x=>!x.retired&&x.cardId===b.cardId&&trackingCategory(x)===category).length===1&&(()=>{const p=currentPeriod(data,b,date);return p&&allowanceUsage(data,b,p)<p.allowance;})());}
+
+// Keep the same entitlement and snapshots when disabling or restoring a card benefit.
+export function setCardBenefits(data,cardId,benefitIds,templateIds,date=today()){
+ const selected=new Set(benefitIds);
+ for(const b of data.benefits.filter(b=>b.cardId===cardId))b.retired=!selected.has(b.id);
+ const templates=data.templates;
+ const additions=(templates||[]).filter(t=>templateIds.includes(t.id)&&!data.benefits.some(b=>b.cardId===cardId&&trackingCategory(b)===t.category));
+ applyTemplates(data,additions,[cardId],date);data.templates=templates;return data;
+}
