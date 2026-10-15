@@ -9,7 +9,7 @@ export function decodeJSON(value) {
   return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Uint8Array.from(binary,c=>c.charCodeAt(0))));
 }
 export class GitHubStore {
-  constructor({owner,repo,token},request=fetch){
+  constructor({owner,repo,token},request=(...args)=>globalThis.fetch(...args)){
     if(!/^[a-zA-Z0-9-]+$/.test(owner)||!/^[\w.-]+$/.test(repo)||!token)throw Error('Enter a valid owner, repository and token.');
     this.base=`https://api.github.com/repos/${owner}/${repo}`;this.token=token;this.request=request;
   }
