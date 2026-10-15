@@ -1,0 +1,41 @@
+.summary-filters{display:flex;flex-wrap:wrap;align-items:end;gap:10px 14px;margin:0 0 18px;padding:14px 16px;background:#ffffffa6;border:1px solid var(--line);border-radius:16px;}
+.summary-filters label{display:grid;gap:6px;font-size:11px;font-weight:700;color:var(--muted);}
+.summary-filters select,.summary-filters input{min-height:44px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);min-width:0;}
+.summary-filters label:first-child{flex:1;min-width:150px;max-width:370px;}
+.fee-summary{display:grid;grid-template-columns:1fr 1.4fr;gap:12px 25px;margin-top:14px;padding:20px 22px;background:#ece4fa;border:1px solid #d9c8ee;border-radius:18px;}
+.fee-summary>div{display:grid;gap:6px;min-width:0;}
+.fee-summary span{font-size:12px;font-weight:700;}
+.fee-summary strong{font-size:27px;font-weight:800;letter-spacing:-.6px;overflow-wrap:anywhere;}
+.fee-summary small,.fee-summary p{font-size:11px;color:var(--muted);line-height:1.5;}
+.fee-summary p{grid-column:1/-1;margin:0;}
+.summary-filter-note{font-size:11px;color:var(--muted);line-height:1.6;margin:12px 0;}
+.wallet-item{min-width:0;border-radius:23px;box-shadow:var(--shadow);align-self:start;}
+.wallet-item .bank-card{border-bottom-left-radius:0;border-bottom-right-radius:0;}
+.card-fees{background:#fff;border:1px solid var(--line);border-top:0;padding:17px 20px;border-radius:0 0 22px 22px;}
+.fee-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.fee-section-heading h3{font-size:15px;}
+.fees-unset{padding:10px 12px;border-radius:10px;background:#f1edfa;color:#625078;font-size:12px;}
+.fee-facts{display:grid;gap:10px;margin:12px 0;}
+.fee-facts>div{display:flex;gap:15px;align-items:baseline;justify-content:space-between;}
+.fee-facts dt{font-size:12px;color:var(--muted);}
+.fee-facts dd{margin:0;text-align:right;font-size:13px;font-weight:750;overflow-wrap:anywhere;}
+.card-value-breakdown summary{min-height:44px;padding:12px 0;font-size:12px;font-weight:750;color:var(--violet);cursor:pointer;}
+.card-value-breakdown .net-line{padding-top:10px;border-top:1px dashed var(--line);}
+.net-line dt,.net-line dd{color:var(--ink);font-weight:800;}
+.fee-actions{display:flex;flex-wrap:wrap;gap:10px;margin:17px 0;}
+.fee-history-entry{padding:15px 0;border-bottom:1px dashed var(--line);}
+.fee-history-entry>div{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;}
+.fee-history-entry p,.fee-move{font-size:12px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere;}
+.fee-net-note{padding:14px;background:#eee6fa;border-radius:13px;margin:18px 0;font-size:12px;}
+.fee-net-note p{margin-bottom:0;color:var(--muted);}
+.event-fee{background:#fff0dc;border-color:#edc68e;}
+.event-fee .date-tile{background:#ffe1b8;color:#784322;}
+[data-theme="festive"] .fee-summary,[data-theme="festive"] .fee-net-note{background:#f7e6ec;border-color:#e9cbd7;}
+[data-theme="festive"] .card-fees{background:#fffdfa;}
+@media(max-width:600px){
+ .summary-filters{padding:12px;gap:10px;}.summary-filters label:first-child{max-width:none;flex-basis:100%;}.summary-filters label:not(:first-child){width:calc(50% - 5px);}.summary-filters .text-button{margin-left:auto;}
+ .fee-summary{padding:16px;gap:15px;grid-template-columns:1fr 1fr;}.fee-summary strong{font-size:23px;}.fee-summary small{font-size:10px;}.card-fees{padding:14px 17px;}.fee-facts dt{font-size:11px;}.fee-facts dd{font-size:12px;}.fee-actions .button{flex:1 1 100%;}
+}
+.summary-filter-panel{margin-bottom:16px;border:1px solid var(--line);border-radius:13px;background:#ffffff91;}
+.summary-filter-panel>summary{cursor:pointer;padding:13px 16px;min-height:44px;font-size:12px;font-weight:700;color:var(--violet);}
+.summary-filter-panel .summary-filters{border:0;margin:0;background:transparent;padding-top:0;}

@@ -1,0 +1,157 @@
+/* Shared theme controls. The everyday palette remains in styles.css. */
+.theme-setting { position: relative; }
+.theme-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.theme-toggle input { appearance: none; position: relative; flex-shrink: 0; width: 34px; height: 21px; margin: 0; border: 1px solid #aa96c9; border-radius: 30px; background: #e0d7ed; cursor: pointer; }
+.theme-toggle input::before { content: ''; display: block; width: 13px; height: 13px; background: #fff; border: 1px solid #b8a5cf; border-radius: 50%; position: absolute; top: 3px; left: 3px; }
+.theme-toggle input:checked { background: #9c2166; border-color: #9c2166; }
+.theme-toggle input:checked::before { left: 16px; border-color: white; }
+#theme-notice:not(:empty) { display: block; font-size: 11px; max-width: 240px; padding: 8px; background: #fff0ce; border: 1px solid #e4c995; color: #78501a; border-radius: 8px; }
+.hero-title { display: flex; align-items: center; gap: 20px; }
+.diya, .festive-lights { display: none; }
+.intro-actions { flex-shrink: 0; text-align: center; }
+.celebration { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 29px; margin-top: 5px; font-size: 11px; font-weight: 700; color: #8f285d; }
+.celebration-sparks { position: relative; display: block; width: 52px; height: 24px; flex-shrink: 0; overflow: hidden; }
+.celebration-sparks i { font-style: normal; position: absolute; left: calc(var(--spark-index) * 10px); top: calc(3px + var(--spark-index) * 2px); font-size: 11px; color: #a96617; opacity: 0; }
+.celebration-sparks i:nth-child(even) { color: #a42e6a; }
+:root[data-theme="everyday"] .celebration { visibility: hidden; }
+:root[data-theme="festive"] {
+  --ink: #3b204d;
+  --muted: #735d73;
+  --line: #eaddd9;
+  --paper: #fff9ef;
+  --violet: #9c2166;
+  --violet-dark: #7b174f;
+  --shadow: 0 5px 20px #77352b07;
+}
+[data-theme="festive"] :where(button, a, input, select, textarea):focus-visible { outline-color: #984186; }
+[data-theme="festive"] .topbar { background: #fffdf7; border-bottom-color: #ecddc7; }
+[data-theme="festive"] .brand-icon { background: #762451; box-shadow: 0 4px 12px #8f285d1a; }
+[data-theme="festive"] .brand-icon > span { color: #bd7e23; }
+[data-theme="festive"] #save-state::before { color: #327c70; }
+[data-theme="festive"] .subtle { color: #7b2857; background: #f7e3ed; }
+[data-theme="festive"] .subtle:hover { background: #f3d3e2; }
+[data-theme="festive"] .outline { color: #853c65; border-color: #eac5d4; background: #fbebf0; }
+[data-theme="festive"] .outline:hover { background: #f7dce7; }
+[data-theme="festive"] .text-button { color: #8a235a; }
+[data-theme="festive"] .text-button:hover { background: #f9e7ef; }
+[data-theme="festive"] .festive-lights { display: block; height: 32px; color: #be955c; position: relative; overflow: hidden; padding: 0 5%; pointer-events: none; }
+[data-theme="festive"] .festive-lights > svg { width: 100%; height: 28px; }
+/* Decorative corners live entirely in the light strip, outside controls and totals. */
+[data-theme="festive"] .festive-lights::before, [data-theme="festive"] .festive-lights::after {
+  content: ''; position: absolute; width: 48px; height: 48px; top: -18px; opacity: .5;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23b98336' stroke-width='1.2'%3E%3Ccircle cx='32' cy='32' r='7'/%3E%3Ccircle cx='32' cy='32' r='24' stroke-dasharray='2 4'/%3E%3Cpath d='M32 25C16 12 25 0 32 12C39 0 48 12 32 25ZM39 32C52 16 64 25 52 32C64 39 52 48 39 32ZM32 39C48 52 39 64 32 52C25 64 16 52 32 39ZM25 32C12 48 0 39 12 32C0 25 12 16 25 32Z'/%3E%3C/svg%3E") center / contain;
+}
+[data-theme="festive"] .festive-lights::before { left: 5px; }
+[data-theme="festive"] .festive-lights::after { right: 5px; }
+[data-theme="festive"] .intro { padding-top: 23px; }
+[data-theme="festive"] .eyebrow { color: #91601d; }
+[data-theme="festive"] h1 { letter-spacing: -1.8px; }
+[data-theme="festive"] h1 > span { color: #b62b72; }
+[data-theme="festive"] .diya { display: block; width: 83px; flex-shrink: 0; order: 1; }
+[data-theme="festive"] .diya svg { width: 100%; height: auto; }
+[data-theme="festive"] .intro .muted { max-width: 510px; }
+[data-theme="festive"] .primary { box-shadow: 0 4px 12px #9c216616; }
+[data-theme="festive"] .metric-personal { background: #ffedbd; }
+[data-theme="festive"] .metric-sales { background: #fbdde7; }
+[data-theme="festive"] .metric-pending { background: #e9dff7; }
+[data-theme="festive"] .metric-unused { background: #d7f1e8; }
+[data-theme="festive"] .metric > small { color: #645269; }
+[data-theme="festive"] .metric-personal .metric-icon { color: #8a5918; }
+[data-theme="festive"] .metric-sales .metric-icon { color: #9e3261; }
+[data-theme="festive"] .metric-pending .metric-icon { color: #7243a0; }
+[data-theme="festive"] .metric-unused .metric-icon { color: #207466; }
+[data-theme="festive"] .tabs { background: #f5e8df; border-color: #ecdbd2; }
+[data-theme="festive"] .tabs button { color: #765368; }
+[data-theme="festive"] .tabs button:hover { background: #efdbd6; }
+[data-theme="festive"] .tabs button.active { color: white; background: #87235d; box-shadow: 0 3px 9px #87235d1a; }
+[data-theme="festive"] .tabs [data-tab="benefits"] span { color: #8a5918; background: #ffecbe; }
+[data-theme="festive"] .tabs [data-tab="records"] span { color: #8a2e5a; background: #f5d7e4; }
+[data-theme="festive"] .tabs .active span { color: white; background: #ffffff2b; }
+[data-theme="festive"] .search, [data-theme="festive"] .toolbar select { background: #fffdf8; }
+[data-theme="festive"] .search > span { color: #997047; }
+[data-theme="festive"] .toolbar select { color: #74516a; }
+[data-theme="festive"] input::placeholder { color: #806c7b; }
+[data-theme="festive"] .benefit-card { background: #fffefb; }
+[data-theme="festive"] .card-actions { border-color: #f0e6e0; }
+[data-theme="festive"] .side-panel { background: #fff5df; border-color: #ecd6a6; }
+[data-theme="festive"] .side-title .small-icon { background: #fbe3b3; color: #88581c; }
+[data-theme="festive"] .privacy { background: #f5e4ef; border-color: #e9cddf; }
+[data-theme="festive"] .privacy .small-icon, [data-theme="festive"] .privacy .text-button { color: #8d2b68; }
+[data-theme="festive"] .privacy p { color: #73556c; }
+[data-theme="festive"] .empty { background: linear-gradient(135deg, #fffef9 50%, #f9e9ed); border-color: #ead4cd; }
+[data-theme="festive"] .empty-icon { background: #fae8c4; color: #916019; }
+[data-theme="festive"] .bank-card { border: 1px solid #b27a3950; box-shadow: 0 8px 20px #793f2a14; }
+[data-theme="festive"] .color-0 { background: linear-gradient(125deg, #54215f, #773775); }
+[data-theme="festive"] .color-1 { background: linear-gradient(125deg, #095c61, #21766e); }
+[data-theme="festive"] .color-2 { background: linear-gradient(125deg, #34305f, #554077); }
+[data-theme="festive"] .color-3 { background: linear-gradient(125deg, #8c244f, #a23861); }
+[data-theme="festive"] .color-4 { background: linear-gradient(125deg, #663b27, #825431); }
+[data-theme="festive"] .bank-card::before { border: 1px solid #f9dfa745; width: 180px; height: 180px; top: -75px; right: -65px; transform: rotate(45deg); border-radius: 30%; }
+[data-theme="festive"] .bank-card::after { border: 1px dashed #f9dfa736; width: 150px; height: 150px; top: -60px; right: -50px; transform: rotate(45deg); border-radius: 30%; }
+[data-theme="festive"] .select-label { border-color: #eac99365; background: #ffffff08; }
+[data-theme="festive"] .bank-card-bottom { border-color: #ebd2a54d; }
+/* The flap and stamp sit in their own 16px rail; all voucher details stay below it. */
+[data-theme="festive"] .record { background: #fffef9; border: 1px solid #e5d4c3; border-left: 4px solid var(--edge); padding-top: 38px; overflow: hidden; }
+[data-theme="festive"] .record::before { content: ''; position: absolute; pointer-events: none; left: 0; right: 0; top: 0; height: 16px; background: linear-gradient(165deg, transparent 49.5%, #d7b987 50%, transparent 51%) left / 50% 100% no-repeat, linear-gradient(195deg, transparent 49.5%, #d7b987 50%, transparent 51%) right / 50% 100% no-repeat, #fbf1dd; border-bottom: 1px solid #eadac2; }
+[data-theme="festive"] .record::after { content: ''; position: absolute; top: 1px; left: calc(50% - 8px); width: 16px; height: 16px; text-align: center; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23906020' d='m10 1 3 6 6 3-6 3-3 6-3-6-6-3 6-3Z'/%3E%3C/svg%3E") center / 10px no-repeat #fbe7bd; border-radius: 50%; pointer-events: none; }
+[data-theme="festive"] .record-details, [data-theme="festive"] .record-footer { border-color: #ddc5ac; }
+[data-theme="festive"] .record-footer::before, [data-theme="festive"] .record-footer::after { display: none; }
+[data-theme="festive"] .sale-line { background: #eaf5f0; }
+[data-theme="festive"] .sale-line strong { color: #90501f; background: #ffe6c4; }
+[data-theme="festive"] dialog { background: #fffbf3; border-color: #ebd4bc; border-top-color: #c38a37; box-shadow: 0 20px 100px #46213940; }
+[data-theme="festive"] dialog::backdrop { background: #35203570; }
+[data-theme="festive"] .icon-button { color: #8c2b5f; background: #f6dfe9; }
+[data-theme="festive"] .icon-button:hover { background: #f2d1e1; }
+[data-theme="festive"] .form-note { background: #f9eddb; border-color: #ecdbbd; color: #755b56; }
+[data-theme="festive"] .field input, [data-theme="festive"] .field select, [data-theme="festive"] .field textarea { border-color: #d8bfc4; background: #fffefc; }
+[data-theme="festive"] .field input:focus, [data-theme="festive"] .field select:focus, [data-theme="festive"] .field textarea:focus { border-color: #ae5683; }
+[data-theme="festive"] .field input:disabled, [data-theme="festive"] .field input[readonly] { background: #f5eee7; color: #7a666d; }
+[data-theme="festive"] .backup-block { background: #fffefb; border-color: #e7d3bd; }
+[data-theme="festive"] .backup-block:nth-child(3) { background: #f0f7ef; border-color: #d4e5d0; }
+[data-theme="festive"] .period-list article { background: #fffefb; border-color: #e7d3bd; border-left-color: #c49140; }
+[data-theme="festive"] .period-list article:nth-child(even) { border-left-color: #a94c7e; }
+[data-theme="festive"] input[type=file]::file-selector-button { background: #f6dfe9; color: #8c2b5f; }
+[data-theme="festive"] .toast { background: #52213f; border-color: #c39172; }
+[data-theme="festive"] .dot { color: #a77830; }
+@media (max-width: 800px) {
+  .topbar { flex-wrap: wrap; gap: 8px 15px; }
+  .header-right { gap: 14px; }
+  [data-theme="festive"] .diya { width: 65px; }
+}
+@media (max-width: 600px) {
+  .topbar { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  .header-right { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0 10px; width: 100%; }
+  .theme-setting { grid-column: 1; grid-row: 1; }
+  #save-state { grid-column: 1; grid-row: 2; max-width: none; font-size: 9px; }
+  .header-right > .button { grid-column: 2; grid-row: 1 / 3; min-height: 44px; }
+  .theme-toggle { min-height: 44px; font-size: 11px; }
+  .intro-actions { width: 100%; text-align: left; }
+  .intro-actions > .button { width: 100%; }
+  .celebration { justify-content: flex-start; min-height: 25px; }
+  .hero-title { gap: 12px; }
+  [data-theme="festive"] .diya { width: 56px; }
+  [data-theme="festive"] .festive-lights { height: 26px; }
+  [data-theme="festive"] .intro { padding-top: 17px; gap: 12px; padding-bottom: 15px; }
+  [data-theme="festive"] .hero-title h1 { font-size: 35px; }
+}
+@media (max-width: 360px) {
+  [data-theme="festive"] .hero-title h1 { font-size: 31px; }
+  [data-theme="festive"] .diya { width: 48px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .celebration-sparks i { animation: gentle-spark 1.1s ease-out both; animation-delay: calc(var(--spark-index) * 45ms); }
+  @keyframes gentle-spark { 0% { opacity: 0; transform: translateY(8px) scale(.7); } 30% { opacity: .85; } 100% { opacity: 0; transform: translateY(-8px) scale(1); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .celebration-sparks { display: none !important; }
+}
+
+/* Sparkles stay inside the existing save notice, never over voucher data or controls. */
+#toast .celebration { min-height: 0; margin: 6px 0 0; justify-content: flex-start; color: #ffe6b3; }
+#toast .celebration:empty { display: none; }
+#toast .celebration-sparks i { color: #f9da8e; }
+#toast .celebration-sparks i:nth-child(even) { color: #f5bbd8; }
+/* Wallet actions need white text against every jewel-tone background. */
+[data-theme="festive"] .bank-card .text-button { color: #fff; }
+[data-theme="festive"] .bank-card .text-button:hover { background: #ffffff20; }
+[data-theme="festive"] .bank-card .text-button:focus-visible { outline-color: #ffe2a0; }

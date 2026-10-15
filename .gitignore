@@ -1,0 +1,7 @@
+# Personal exports, local records, screenshots and browser profiles must stay private.
+*.json
+*.json.*
+backups/
+private/
+.local/
+test-results/
