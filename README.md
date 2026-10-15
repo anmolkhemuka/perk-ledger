@@ -26,7 +26,7 @@ Conflicting rules are preserved, flagged and excluded from new-request availabil
 
 ## Edit a card
 
-Edit card combines cardholder details, active benefit switches and expandable fee settings. Card artwork/type is selected only when adding a card. Switch a benefit off to stop new requests while preserving history, totals and issued vouchers; switch it back on to restore the same ID and period allowance. Missing shared benefits can be added here too. Shared setup manages defaults; deselecting a template does not remove existing card benefits. Payments and fee history remain accessible from the wallet.
+Add card includes optional fee settings, with joining payments and renewal dates saved together with the new card. Leaving fees blank keeps them unspecified. Edit card combines cardholder details, active benefit switches and expandable fee settings. Card artwork/type is selected only when adding a card. Switch a benefit off to stop new requests while preserving history, totals and issued vouchers; switch it back on to restore the same ID and period allowance. Missing shared benefits can be added here too. Shared setup manages defaults; deselecting a template does not remove existing card benefits. Payments and fee history remain accessible from the wallet.
 
 ## Portal → voucher → outcome
 
