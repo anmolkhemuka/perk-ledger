@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialData,syncPeriods,currentPeriod,allowanceUsage,validateData,totals,reviewIssues,saveData,loadData,STORAGE_KEY,WORKFLOW_BACKUP_KEY} from '../core.mjs';
 import {templateDraft,applyTemplates} from '../setup.mjs';
-import {requestBenefit,receiveVoucher,cancelRequest,completeVoucher,correctStage,workflowRows,workflowCounts} from '../portal.mjs';
+import {requestBenefit,receiveVoucher,cancelRequest,completeVoucher,correctStage,workflowRows,workflowCounts,statusRows} from '../portal.mjs';
 import {stageOf} from '../stages.mjs';
 import {financialTotals,saveFeeSettings} from '../fees.mjs';
 const date='2026-10-15';
@@ -24,3 +24,15 @@ test('fees, historical amounts, stage audit and exact totals survive v5 backup r
 test('before-workflow recovery copy is exact and storage failure cannot overwrite original',()=>{const d=fixture();d.version=4;const raw=JSON.stringify(d),map=new Map([[STORAGE_KEY,raw]]),storage={getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)};saveData(storage,validateData(d));assert.equal(map.get(WORKFLOW_BACKUP_KEY),raw);const failing={getItem:k=>k===STORAGE_KEY?raw:null,setItem(){throw Error('Quota exceeded');}};assert.throws(()=>saveData(failing,validateData(d)),/Quota/);assert.equal(failing.getItem(STORAGE_KEY),raw);});
 test('pending requests cannot bypass code receipt into a realised outcome',()=>{const d=fixture(),b=d.benefits[0],p=d.periods[0],r=requestBenefit(d,b.id,p.id,date);assert.throws(()=>finish(d,r,'sold'),/Add the voucher first/);assert.equal(financialTotals(d).received,0);assert.equal(r.stage,'requested');});
 test('unknown stages and malformed audit history are rejected without changing source records',()=>{const d=fixture(),b=d.benefits[0],p=d.periods[0],r=requestBenefit(d,b.id,p.id,date);for(const mutate of [x=>x.records[0].stage='issued maybe',x=>x.records[0].workflowHistory[0].snapshot.sale=-1,x=>x.records[0].workflowHistory[0].date='2026-02-30',x=>x.records[0].workflowHistory[0].id=x.records[0].id]){const bad=structuredClone(d);mutate(bad);assert.throws(()=>validateData(bad));}assert.equal(r.stage,'requested');assert.equal(r.workflowHistory.length,1);});
+
+test('status drill-downs match dashboard counts and independently filter categories and cards',()=>{
+ const d=fixture(),b=d.benefits[0],p=currentPeriod(d,b,date),r=voucher(d,b,p);
+ const counts=workflowCounts(d,date);assert.equal(statusRows(d,{stage:'not requested',date}).reduce((n,x)=>n+x.units,0),counts.need);assert.equal(statusRows(d,{stage:'voucher ready',date}).length,counts.ready);
+ assert.equal(statusRows(d,{stage:'voucher ready',category:b.category,cardId:b.cardId,date})[0].r.id,r.id);assert.equal(statusRows(d,{stage:'voucher ready',category:'fitness',date}).length,0);assert.equal(statusRows(d,{stage:'voucher ready',cardId:d.cards[1].id,date}).length,0);
+ const before=JSON.stringify(d);statusRows(d,{stage:'not requested',sort:'card',date});assert.equal(JSON.stringify(d),before);
+});
+test('status list retains old vouchers and sorts earliest expiry first within category',()=>{
+ const d=fixture(),benefits=d.benefits.filter(b=>b.category==='spa'),a=voucher(d,benefits[0],currentPeriod(d,benefits[0],date),undefined,'Spa',date,'2027-02-01'),b=voucher(d,benefits[1],currentPeriod(d,benefits[1],date),undefined,'Spa',date,'2027-01-15');
+ syncPeriods(d,'2027-01-01');const rows=statusRows(d,{stage:'voucher ready',date:'2027-01-01'});assert.deepEqual(rows.map(x=>x.r.id),[b.id,a.id]);assert.ok(rows.every(x=>x.older));
+ benefits[1].retired=true;assert.equal(statusRows(d,{stage:'voucher ready',date:'2027-01-01'}).length,2);finish(d,b);assert.equal(statusRows(d,{stage:'voucher ready',date:'2027-01-01'}).length,1);
+});

@@ -30,7 +30,7 @@ Edit card combines cardholder details, active benefit switches and expandable fe
 
 ## Portal → voucher → outcome
 
-The Benefits view groups categories into compact card rows labelled with their actual quarter/year. Financial totals and workflow counts are separate.
+The Benefits view groups categories into compact card rows labelled with their actual quarter/year. Click Need to request, Awaiting code or Vouchers ready to open a focused status screen. Filter by category and card, sort within each category by deadline/request date or card name, and edit codes or record outcomes directly. Rows show bank, holder, optional last four and the original claim period. Saving an edit updates the underlying status screen immediately. Empty stages explain how to add requests or codes. These screens ignore unrelated search and financial filters; the dashboard card scope is carried into the screen. Financial totals and workflow counts are separate.
 
 | Stage | Meaning / action |
 | --- | --- |

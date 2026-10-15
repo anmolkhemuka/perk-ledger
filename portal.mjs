@@ -64,3 +64,11 @@ export function workflowCounts(data,date=today()){
  const rows=workflowRows(data,{date});return {need:rows.filter(x=>x.stage==='not requested'&&!x.conflict).reduce((sum,x)=>sum+x.units,0),awaiting:rows.filter(x=>x.stage==='requested').length,ready:rows.filter(x=>x.stage==='voucher ready').length};
 }
 export function nearing(date,end,days=14){if(!end||end<date)return false;return (Date.parse(end+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000<=days;}
+
+// Tile drill-downs share the exact availability rules used by dashboard counts.
+export function statusRows(data,{stage,cardId='',category='',sort='date',date=today()}={}){
+ const rows=workflowRows(data,{date}).filter(row=>row.stage===stage&&!(stage==='not requested'&&row.conflict)&&(!cardId||row.b.cardId===cardId)&&(!category||trackingCategory(row.b)===category));
+ const cardLabel=row=>{const c=data.cards.find(c=>c.id===row.b.cardId);return `${c?.nickname||c?.bank||''} ${c?.holder||''} ${c?.last4||''}`;};
+ const deadline=row=>stage==='not requested'?row.p.end:stage==='requested'?(row.r.requestDate||'9999-12-31'):(row.r.expiry||'9999-12-31');
+ return rows.sort((a,b)=>trackingCategory(a.b).localeCompare(trackingCategory(b.b))||(sort==='card'?cardLabel(a).localeCompare(cardLabel(b)):deadline(a).localeCompare(deadline(b)))||cardLabel(a).localeCompare(cardLabel(b))||a.p.start.localeCompare(b.p.start));
+}
