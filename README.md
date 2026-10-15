@@ -154,3 +154,8 @@ Add/Edit card offers BOI, Canara, Utkarsh, BOB Bhoomi and Other picture options.
 ## Home-screen app
 
 Use Add to home screen in the page’s privacy panel for installation guidance. iPhone: open in Safari, Share → Add to Home Screen, enable Open as Web App if offered, then Add. Android Chrome may offer Install app; otherwise use its menu. The standalone app has a purple-and-gold gift icon and caches only public app files for offline loading after one successful online visit. GitHub data/API responses and tokens never enter the service-worker cache. Cloud sync needs internet. Browser and installed-app storage can differ: keep a backup and connect the installed app to your cloud copy if records appear empty. For future source releases, bump the shell cache version in sw.js; updates take effect after all app windows close.
+
+
+## Automatic fee renewal dates
+
+On new fee setup, a joining/upfront payment date suggests the first annual fee date one year later, even with ₹0 joining fee. You can override the due date or clear it to opt out. Existing renewal schedules remain unchanged unless explicitly edited. Use joining anniversary recalculates the suggestion on demand. The joining date records the entered joining amount once; annual charges remain reminders until confirmed paid/waived. Overdue years are not silently skipped, and February 29 anniversaries return in leap years.

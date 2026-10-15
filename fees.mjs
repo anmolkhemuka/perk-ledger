@@ -10,6 +10,12 @@ export function renewalDate(year,monthDay){
  const last=new Date(Date.UTC(year,month,0)).getUTCDate();
  return `${year}-${String(month).padStart(2,'0')}-${String(Math.min(day,last)).padStart(2,'0')}`;
 }
+export function firstAnnualDue(joiningDate){
+ if(!isDate(joiningDate))fail('Enter a valid joining date.');
+ const year=Number(joiningDate.slice(0,4))+1;
+ if(year>2199)fail('Next renewal exceeds the supported date range.');
+ return renewalDate(year,joiningDate.slice(5));
+}
 export function validateFees(input,existingIds=new Set()){
  if(input.version>=4&&['feeSettings','feeEntries','feeReschedules'].some(key=>input[key]===undefined))fail('Invalid backup: missing card fee collections.');
  const settings=input.feeSettings===undefined?[]:input.feeSettings,entries=input.feeEntries===undefined?[]:input.feeEntries,moves=input.feeReschedules===undefined?[]:input.feeReschedules;
@@ -36,9 +42,11 @@ export function settingsFor(data,cardId){return data.feeSettings?.find(s=>s.card
 export function saveFeeSettings(data,cardId,values,date=dayNow()){
  if(!data.cards.some(c=>c.id===cardId))fail('Card not found.');
  const old=settingsFor(data,cardId),joiningEntry=data.feeEntries.find(e=>e.cardId===cardId&&e.kind==='joining');
- const nextDue=values.nextDue||'',changed=!!old&&nextDue!==old.nextDue;
+ const inferred=values.autoSchedule!==false&&!values.nextDue&&!old?.nextDue&&!joiningEntry&&!!values.joiningPaidDate;
+ const nextDue=values.nextDue||(inferred?firstAnnualDue(values.joiningPaidDate):''),changed=!!old&&nextDue!==old.nextDue;
+ const sourceDate=(inferred||values.renewalFromJoining)?(values.joiningPaidDate||joiningEntry?.paidDate):'';
  const occurrence=nextDue?(old?.nextOccurrence||nextDue):'';
- const setting={cardId,joiningAmount:values.joiningAmount,annualAmount:values.annualAmount,nextDue,nextOccurrence:occurrence,renewalDay:nextDue&&(!old?.renewalDay||values.resetRenewal)?nextDue.slice(5):(old?.renewalDay||''),notes:values.notes||''};
+ const setting={cardId,joiningAmount:values.joiningAmount,annualAmount:values.annualAmount,nextDue,nextOccurrence:occurrence,renewalDay:nextDue&&(!old?.renewalDay||values.resetRenewal)?(sourceDate||nextDue).slice(5):(old?.renewalDay||''),notes:values.notes||''};
  if(changed&&old.nextDue&&nextDue)data.feeReschedules.push({id:uid(),cardId,occurrence:old.nextOccurrence,from:old.nextDue,to:nextDue,date,notes:'Due date changed in fee settings.'});
  if(old)data.feeSettings=data.feeSettings.map(s=>s.cardId===cardId?setting:s);else data.feeSettings.push(setting);
  if(values.joiningPaidDate&&!joiningEntry)settleFee(data,cardId,'joining','paid',values.joiningAmount,values.joiningPaidDate,'Recorded from joining-fee settings.');
