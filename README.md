@@ -149,3 +149,8 @@ Cloud data is validated before loading. Loading saves the prior local ledger und
 ## Visual card selection
 
 Add/Edit card offers BOI, Canara, Utkarsh, BOB Bhoomi and Other picture options. A validated `cardType` ID keeps the artwork independent of nicknames and bank text. Older backups infer recognisable bank names once; unknown banks stay generic until selected. Card IDs, ownership and financial history are unchanged. Wallet tiles combine a small portrait image with bank name and last four digits, then a compact holder/action footer.
+
+
+## Home-screen app
+
+Use Add to home screen in the page’s privacy panel for installation guidance. iPhone: open in Safari, Share → Add to Home Screen, enable Open as Web App if offered, then Add. Android Chrome may offer Install app; otherwise use its menu. The standalone app has a purple-and-gold gift icon and caches only public app files for offline loading after one successful online visit. GitHub data/API responses and tokens never enter the service-worker cache. Cloud sync needs internet. Browser and installed-app storage can differ: keep a backup and connect the installed app to your cloud copy if records appear empty. For future source releases, bump the shell cache version in sw.js; updates take effect after all app windows close.

@@ -364,3 +364,6 @@ input[type=file]::file-selector-button { background: #eee3ff; border: 0; color: 
 @media (prefers-reduced-motion: no-preference) {
   .button:active, .tabs button:active { transform: scale(.98); }
 }
+
+.install-section{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}.install-section .button{width:100%;font-size:12px;}.install-section details{font-size:12px;line-height:1.6;}.install-section summary{cursor:pointer;font-weight:700;}.install-section [role=status]:empty{display:none;}
+@media(display-mode:standalone){body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);}}

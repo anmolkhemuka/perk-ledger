@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+import vm from 'node:vm';
+const root=new URL('../',import.meta.url);
+test('home screen manifest has portable scope and real PNG icons',()=>{const m=JSON.parse(readFileSync(new URL('manifest.webmanifest',root)));assert.equal(m.display,'standalone');assert.equal(m.start_url,'./');for(const icon of m.icons){const file=new URL(icon.src,root);assert.ok(existsSync(file));const png=readFileSync(file);assert.equal(png.toString('ascii',1,4),'PNG');const size=Number(icon.sizes.split('x')[0]);assert.equal(png.readUInt32BE(16),size);assert.equal(png.readUInt32BE(20),size);}});
+test('worker installs only existing app assets and never handles private data',()=>{const handlers={};let cached;vm.runInNewContext(readFileSync(new URL('sw.js',root),'utf8'),{URL,self:{registration:{scope:'https://example.org/perk-ledger/'},location:{origin:'https://example.org'},addEventListener:(type,fn)=>handlers[type]=fn},caches:{open:async()=>({addAll:files=>{cached=files;}})}});let install;handlers.install({waitUntil:p=>install=p});return install.then(()=>{for(const name of cached)assert.ok(existsSync(new URL(name==='./'?'index.html':name,root)),name);for(const url of ['https://api.github.com/repos/private/data/contents/ledger.json','https://example.org/perk-ledger/ledger.json','https://example.org/unrelated/']){handlers.fetch({request:{url,method:'GET'},respondWith:()=>assert.fail('Must not intercept '+url)});}});});
