@@ -382,3 +382,5 @@ input[type=file]::file-selector-button { background: #eee3ff; border: 0; color: 
 @media(max-height:500px){.sync-heading{padding-top:8px;padding-bottom:8px;}.sync-heading p{display:none;}.sync-actions{grid-template-columns:repeat(3,minmax(0,1fr));padding-top:8px;padding-bottom:8px;gap:6px;}.sync-actions [data-command=connect]{grid-column:auto;}.sync-actions button{min-height:40px;}.sync-body{padding-top:8px;padding-bottom:8px;}}
 
 .card-fee-editor{margin:24px 0;border:1px solid var(--line);border-radius:18px;padding:18px}.card-fee-editor summary{font-weight:700;cursor:pointer;padding:8px 0}.card-fee-editor[open] summary{margin-bottom:16px}.template-selection label{min-height:44px;align-items:center}.card-fee-editor .form-note{overflow-wrap:anywhere}
+
+.app-update-status{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);font-size:13px;color:var(--ink);}

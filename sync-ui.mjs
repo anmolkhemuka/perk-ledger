@@ -8,7 +8,8 @@ export function initGitHubSync({getData,applyData,validate,canSave}){
  const button=document.createElement('button');button.type='button';button.className='button subtle';button.textContent='Cloud sync';document.querySelector('.header-right').append(button);
  const status=document.createElement('p');status.className='muted';status.setAttribute('role','status');document.querySelector('main').prepend(status);
  const say=s=>status.textContent=s;
- const dialog=document.createElement('dialog');dialog.className='sync-dialog';dialog.setAttribute('aria-labelledby','sync-title');dialog.innerHTML=`<form method="dialog"><header class="sync-heading"><div><h2 id="sync-title">Cloud sync</h2><p>Keep your devices together</p></div><button type="button" data-command="close" class="icon-button" aria-label="Close cloud sync">×</button></header><div class="sync-body"><p class="sync-intro">Connect your private GitHub data repository.</p><label class="field">GitHub username<input name="owner" required autocomplete="username" autocapitalize="none" spellcheck="false"></label><label class="field">Private data repository<input name="repo" required autocapitalize="none" spellcheck="false"></label><label class="field">Restricted token<input name="token" type="password" required autocomplete="off" autocapitalize="none" spellcheck="false"></label><label class="sync-remember"><input type="checkbox" name="remember"><span>Remember on this device<small>Browser storage is not encrypted.</small></span></label><p class="sync-message" data-message role="status"></p><details class="sync-help"><summary>Token help & app updates</summary><p>Use a fine-grained token limited to this private repository with Contents read/write. Never put it in source code or share it.</p><p>Sync version 4 · <a href="./update.html">Refresh app files</a></p></details></div><div class="sync-actions"><button type="button" data-command="connect" class="button primary">Connect / check</button><button type="button" data-command="download" class="button subtle">Load cloud data</button><button type="button" data-command="upload" class="button subtle">Upload this device</button><button type="button" data-command="disconnect" class="text-button">Disconnect</button><button type="button" data-command="close" class="button subtle">Close</button></div></form>`;
+ const setBusy=value=>{busy=value;document.documentElement.dataset.syncBusy=String(value);document.dispatchEvent(new Event('perk:update-check'));};
+ const dialog=document.createElement('dialog');dialog.className='sync-dialog';dialog.setAttribute('aria-labelledby','sync-title');dialog.innerHTML=`<form method="dialog"><header class="sync-heading"><div><h2 id="sync-title">Cloud sync</h2><p>Keep your devices together</p></div><button type="button" data-command="close" class="icon-button" aria-label="Close cloud sync">×</button></header><div class="sync-body"><p class="sync-intro">Connect your private GitHub data repository.</p><label class="field">GitHub username<input name="owner" required autocomplete="username" autocapitalize="none" spellcheck="false"></label><label class="field">Private data repository<input name="repo" required autocapitalize="none" spellcheck="false"></label><label class="field">Restricted token<input name="token" type="password" required autocomplete="off" autocapitalize="none" spellcheck="false"></label><label class="sync-remember"><input type="checkbox" name="remember"><span>Remember on this device<small>Browser storage is not encrypted.</small></span></label><p class="sync-message" data-message role="status"></p><details class="sync-help"><summary>Token help</summary><p>Use a fine-grained token limited to this private repository with Contents read/write. Never put it in source code or share it.</p><p>App updates are automatic when online.</p></details></div><div class="sync-actions"><button type="button" data-command="connect" class="button primary">Connect / check</button><button type="button" data-command="download" class="button subtle">Load cloud data</button><button type="button" data-command="upload" class="button subtle">Upload this device</button><button type="button" data-command="disconnect" class="text-button">Disconnect</button><button type="button" data-command="close" class="button subtle">Close</button></div></form>`;
  document.body.append(dialog);
  const fitDialog=()=>{dialog.style.maxHeight=Math.max(180,(window.visualViewport?.height||window.innerHeight)-24)+'px';};
  window.visualViewport?.addEventListener('resize',fitDialog);window.addEventListener('resize',fitDialog);
@@ -20,20 +21,20 @@ export function initGitHubSync({getData,applyData,validate,canSave}){
  async function sync(){
   if(!client||busy||stopped||!meta.base||!canSave())return;
   if(!navigator.onLine){say('Offline — changes saved locally, waiting to sync');return;}
-  busy=true;say('Syncing…');
+  setBusy(true);say('Syncing…');
   try{const remote=await client.read();if(remote)validate(remote.data);const snapshot=raw(),action=decision(snapshot,meta.base,remote,meta.sha);
    if(action==='conflict'){stopped=true;throw Error('Conflicting changes detected. Export a backup, then open Cloud sync to review which copy to keep.');}
    if(action==='download'){if(document.querySelector('#editor')?.open){say('Cloud update available — close the editing form to load it');return;}load(remote);}
    else if(action==='upload'){const sha=await client.write(getData(),meta.sha);checkpoint(sha,snapshot);say(raw()===snapshot?'Synced with private GitHub storage':'New changes waiting to sync');}
    else say('Synced with private GitHub storage');
-  }catch(e){say(e.message+' Your local copy is retained.');}finally{busy=false;}
+  }catch(e){say(e.message+' Your local copy is retained.');}finally{setBusy(false);}
  }
  button.onclick=()=>{f.elements.owner.value=config.owner||'anmolkhemuka';f.elements.repo.value=config.repo||'perk-ledger-data';f.elements.token.value=token();f.elements.remember.checked=!!localStorage.getItem(TOKEN);message.textContent='Connect first, then load your cloud copy or upload this device.';fitDialog();dialog.showModal();};
  dialog.addEventListener('click',async e=>{
   const command=e.target.dataset.command;if(command==='close'){dialog.close();return;}if(!command||busy)return;
   if(command==='disconnect'){client=null;stopped=false;config={};meta={};for(const k of [CONFIG,TOKEN,META])localStorage.removeItem(k);sessionStorage.removeItem(TOKEN);say('Cloud disconnected — local data retained');message.textContent='Disconnected.';return;}
   if(!f.reportValidity())return;
-  busy=true;
+  setBusy(true);
   try{
    if(!canSave())throw Error('Resolve the local storage warning before connecting.');
    const next={owner:f.elements.owner.value.trim(),repo:f.elements.repo.value.trim()},secret=f.elements.token.value.trim();
@@ -56,11 +57,11 @@ export function initGitHubSync({getData,applyData,validate,canSave}){
      const snapshot=raw(),sha=await candidate.write(getData(),remote?.sha);checkpoint(sha,snapshot);client=candidate;stopped=false;message.textContent='Uploaded. Automatic sync enabled.';say('Synced with private GitHub storage');
     }
    }
-  }catch(error){message.textContent=error.message;say('Sync needs attention — local data retained');}finally{busy=false;}
+  }catch(error){message.textContent=error.message;say('Sync needs attention — local data retained');}finally{setBusy(false);}
  });
  window.addEventListener('online',sync);window.addEventListener('focus',sync);
  window.addEventListener('storage',e=>{if([CONFIG,TOKEN,META].includes(e.key)){stopped=true;say('Sync settings changed in another tab. Reload this tab before syncing.');}});
  setInterval(sync,30000);
  try{if(config.owner&&token()){client=new GitHubStore({...config,token:token()});client.checkPrivate().then(sync).catch(e=>{client=null;say(e.message);});}else say('Saved locally — cloud sync not connected');}catch(e){say(e.message);}
- return ()=>{clearTimeout(timer);timer=setTimeout(sync,1200);};
+ return ()=>{clearTimeout(timer);document.documentElement.dataset.syncPending='true';timer=setTimeout(()=>{document.documentElement.dataset.syncPending='false';sync();},1200);};
 }

@@ -1,0 +1,17 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {initAppUpdates} from '../app-updates.mjs';
+function fixture({controlled=true}={}){
+ const events={},workerEvents={},docEvents={},timers=[];let reloads=0,registers=0,updates=0,dialog=false,error=false,note;
+ const registration={update:async()=>{updates++;}};
+ const workers={controller:controlled?{}:null,addEventListener:(type,fn)=>workerEvents[type]=fn,register:async(url,options)=>{assert.equal(url,'./sw.js');assert.equal(options.updateViaCache,'none');registers++;return registration;}};
+ const doc={visibilityState:'visible',documentElement:{dataset:{}},querySelector:selector=>selector==='dialog[open]'?(dialog?{}:null):selector==='#storage-error'?{hidden:!error}:selector==='#app-update-status'?note:selector==='main'?{prepend:element=>note=element}:null,createElement:()=>({setAttribute(){}}),addEventListener:(type,fn)=>docEvents[type]=fn};
+ const win={addEventListener:(type,fn)=>events[type]=fn,setTimeout:fn=>(timers.push(fn),timers.length),setInterval:fn=>events.interval=fn};
+ const nav={serviceWorker:workers,onLine:true};const api=initAppUpdates({win,doc,nav,reload:()=>reloads++});
+ return {doc,nav,api,registration,events,workerEvents,docEvents,timers,get reloads(){return reloads},get registers(){return registers},get updates(){return updates},setDialog:value=>dialog=value,setError:value=>error=value};
+}
+const tick=()=>new Promise(resolve=>setImmediate(resolve));
+test('checks on launch, focus, foreground, reconnection and visible periodic use',async()=>{const f=fixture();await tick();assert.equal(f.registers,1);assert.equal(f.updates,1);f.events.focus();await tick();f.events.online();await tick();f.docEvents.visibilitychange();await tick();f.events.interval();await tick();assert.equal(f.updates,5);f.doc.visibilityState='hidden';f.events.interval();await tick();assert.equal(f.updates,5);f.nav.onLine=false;f.doc.visibilityState='visible';f.events.focus();await tick();assert.equal(f.updates,5);});
+test('a completed update reloads only once and first installation never reloads',async()=>{const f=fixture();await tick();f.workerEvents.controllerchange();f.workerEvents.controllerchange();assert.equal(f.reloads,1);const first=fixture({controlled:false});await tick();first.workerEvents.controllerchange();assert.equal(first.reloads,0);first.workerEvents.controllerchange();assert.equal(first.reloads,1);});
+test('open forms, failed saves, queued writes and active sync defer reload automatically',async()=>{const f=fixture();await tick();f.setDialog(true);f.workerEvents.controllerchange();assert.equal(f.reloads,0);f.setDialog(false);f.setError(true);f.docEvents.close();assert.equal(f.reloads,0);f.setError(false);f.doc.documentElement.dataset.syncPending='true';f.docEvents['perk:update-check']();assert.equal(f.reloads,0);f.doc.documentElement.dataset.syncPending='false';f.doc.documentElement.dataset.syncBusy='true';f.docEvents['perk:update-check']();assert.equal(f.reloads,0);f.doc.documentElement.dataset.syncBusy='false';f.docEvents['perk:update-check']();assert.equal(f.reloads,1);});
+test('hidden pages wait until visible and a failed offline check keeps the app usable',async()=>{const f=fixture();await tick();f.doc.visibilityState='hidden';f.workerEvents.controllerchange();assert.equal(f.reloads,0);f.doc.visibilityState='visible';f.docEvents.visibilitychange();assert.equal(f.reloads,1);f.registration.update=async()=>{throw Error('offline')};await f.api.check();assert.equal(f.reloads,1);});
