@@ -72,3 +72,12 @@ export function statusRows(data,{stage,cardId='',category='',sort='date',date=to
  const deadline=row=>stage==='not requested'?row.p.end:stage==='requested'?(row.r.requestDate||'9999-12-31'):(row.r.expiry||'9999-12-31');
  return rows.sort((a,b)=>trackingCategory(a.b).localeCompare(trackingCategory(b.b))||(sort==='card'?cardLabel(a).localeCompare(cardLabel(b)):deadline(a).localeCompare(deadline(b)))||cardLabel(a).localeCompare(cardLabel(b))||a.p.start.localeCompare(b.p.start));
 }
+
+// Keep actionable groups first; zero counts alone do not imply completion.
+export function benefitGroups(rows,scopeRows=rows){
+ return [...new Set(rows.map(row=>trackingCategory(row.b)))].map(category=>{
+  const group=rows.filter(row=>trackingCategory(row.b)===category);
+  const scope=scopeRows.filter(row=>trackingCategory(row.b)===category);
+  return {category,rows:group.slice().sort((a,b)=>Number(a.stage==='completed')-Number(b.stage==='completed')),completed:scope.length>0&&scope.every(row=>row.stage==='completed'&&!row.conflict)};
+ }).sort((a,b)=>Number(a.completed)-Number(b.completed));
+}

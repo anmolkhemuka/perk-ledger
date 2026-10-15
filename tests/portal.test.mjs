@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialData,syncPeriods,currentPeriod,allowanceUsage,validateData,totals,reviewIssues,saveData,loadData,STORAGE_KEY,WORKFLOW_BACKUP_KEY} from '../core.mjs';
 import {templateDraft,applyTemplates} from '../setup.mjs';
-import {requestBenefit,receiveVoucher,cancelRequest,completeVoucher,correctStage,workflowRows,workflowCounts,statusRows} from '../portal.mjs';
+import {requestBenefit,receiveVoucher,cancelRequest,completeVoucher,correctStage,workflowRows,workflowCounts,statusRows,benefitGroups} from '../portal.mjs';
 import {stageOf} from '../stages.mjs';
 import {financialTotals,saveFeeSettings} from '../fees.mjs';
 const date='2026-10-15';
@@ -36,3 +36,6 @@ test('status list retains old vouchers and sorts earliest expiry first within ca
  syncPeriods(d,'2027-01-01');const rows=statusRows(d,{stage:'voucher ready',date:'2027-01-01'});assert.deepEqual(rows.map(x=>x.r.id),[b.id,a.id]);assert.ok(rows.every(x=>x.older));
  benefits[1].retired=true;assert.equal(statusRows(d,{stage:'voucher ready',date:'2027-01-01'}).length,2);finish(d,b);assert.equal(statusRows(d,{stage:'voucher ready',date:'2027-01-01'}).length,1);
 });
+
+test('fully completed categories move last while active and mixed categories remain first',()=>{const d=fixture(),spa=d.benefits.filter(b=>b.category==='spa');for(const b of spa)finish(d,voucher(d,b,currentPeriod(d,b,date)));const rows=workflowRows(d,{date}),groups=benefitGroups(rows);assert.equal(groups.at(-1).category,'spa');assert.equal(groups.at(-1).completed,true);assert.ok(groups.slice(0,-1).every(g=>!g.completed));const fitness=d.benefits.find(b=>b.category==='fitness');finish(d,voucher(d,fitness,currentPeriod(d,fitness,date)));const mixed=benefitGroups(workflowRows(d,{date})).find(g=>g.category==='fitness');assert.equal(mixed.completed,false);assert.equal(mixed.rows.at(-1).stage,'completed');syncPeriods(d,'2027-01-01');assert.equal(benefitGroups(workflowRows(d,{date:'2027-01-01'})).find(g=>g.category==='spa').completed,false);});
+test('expired, unavailable, conflicting and review rows are never mistaken for completed groups',()=>{const b={category:'spa'};for(const stage of ['expired','needs review','unavailable','requested','voucher ready','not requested'])assert.equal(benefitGroups([{b,stage}])[0].completed,false);assert.equal(benefitGroups([{b,stage:'completed',conflict:true}])[0].completed,false);const done={b,stage:'completed'},active={b,stage:'not requested'};assert.equal(benefitGroups([done],[done,active])[0].completed,false);});

@@ -56,3 +56,8 @@
 .summary-entry{margin:16px 0;}.summary-entry-value{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:10px 0;font-size:12px;}.summary-entry-value strong{font-size:20px;}.summary-entry .portal-row{border-top:0;padding-top:0;}.summary-entry+.summary-entry{border-top:1px solid var(--line);padding-top:12px;}
 
 .metric.metric-realised{color:#fff;}
+
+.completed-benefits-heading{padding:14px 2px 0;}.completed-benefits-heading h3{font-size:19px;margin:0 0 6px;color:var(--muted);}.completed-benefits-heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.6;}
+.benefit-card.benefit-completed{border-top-color:#b9c2d5;background:#f4f5fa;box-shadow:none;}.benefit-card.benefit-completed .perk-icon,.benefit-card.benefit-completed .badge{background:#e4e8f1;color:#4c5870;}.benefit-card.benefit-completed h3{color:#4c5870;}
+.grouped-benefits .portal-completed{background:#f4f5fa;border-radius:12px;padding:14px 12px;}.grouped-benefits .portal-completed .stage-completed{background:#e4e8f1;color:#4c5870;}
+[data-theme="festive"] .benefit-card.benefit-completed,[data-theme="festive"] .grouped-benefits .portal-completed{background:#f6f2ee;}[data-theme="festive"] .benefit-card.benefit-completed{border-top-color:#c7b7aa;}[data-theme="festive"] .benefit-card.benefit-completed .perk-icon,[data-theme="festive"] .benefit-card.benefit-completed .badge,[data-theme="festive"] .grouped-benefits .portal-completed .stage-completed{background:#eae1d9;color:#65584c;}[data-theme="festive"] .benefit-card.benefit-completed h3{color:#65584c;}
