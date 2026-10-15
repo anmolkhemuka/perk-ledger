@@ -163,3 +163,9 @@ Use Add to home screen in the page’s privacy panel for installation guidance. 
 ## Automatic fee renewal dates
 
 On new fee setup, a joining/upfront payment date suggests the first annual fee date one year later, even with ₹0 joining fee. You can override the due date or clear it to opt out. Existing renewal schedules remain unchanged unless explicitly edited. Use joining anniversary recalculates the suggestion on demand. The joining date records the entered joining amount once; annual charges remain reminders until confirmed paid/waived. Overdue years are not silently skipped, and February 29 anniversaries return in leap years.
+
+## Summary breakdowns
+
+All five benefit total cards open a category-grouped breakdown with the same financial date and card filters. Personal/family entries use outcome dates; earnings use received dates (legacy cumulative receipts use the saved last-receipt date). Gross combines these actual contributions. Undated amounts appear only in All time. Records can be edited from the breakdown, and its total refreshes after saving.
+
+Unused value is a current estimate, not a historical balance: the date filter includes currently unused vouchers and current unrequested allowances whose original claim period overlaps the chosen inclusive range. Older live vouchers retain their original period. Requested claims, expired vouchers, retired unrequested rules and conflicting allowances are excluded; unknown estimates remain visible but contribute no amount. This same rule drives the dashboard unused total and its breakdown.

@@ -81,15 +81,23 @@ export function rescheduleFee(data,cardId,due,notes='',changeRenewal=false,date=
  data.feeReschedules.push({id:uid(),cardId,occurrence:s.nextOccurrence,from:s.nextDue,to:due,date,notes});
  s.nextDue=due;if(changeRenewal)s.renewalDay=due.slice(5);
 }
-export function financialTotals(data,{from='',to='',cardId=''}={}){
- const bounded=!!(from||to),within=date=>!bounded||!!date&&(!from||date>=from)&&(!to||date<=to);
+function financialRange({from='',to=''}={}){
  if((from&&!isDate(from))||(to&&!isDate(to))||(from&&to&&from>to))fail('Choose a valid date range: From must not follow To.');
- let personal=0,family=0,received=0,feesPaid=0,undated=0;
- for(const r of data.records){if(r.stage&&r.stage!=='completed')continue;if(cardId&&r.cardId!==cardId)continue;const type=r.outcome;
-  if(['personal','family'].includes(type)&&r.useValue!==null){if(!r.outcomeDate)undated++;if(within(r.outcomeDate)){if(type==='personal')personal+=Math.round(r.useValue*100);else family+=Math.round(r.useValue*100);}}
-  if(type==='sold'&&r.received>0){if(!r.receivedDate)undated++;if(within(r.receivedDate))received+=Math.round(r.received*100);}
+ return date=>!(from||to)||!!date&&(!from||date>=from)&&(!to||date<=to);
+}
+// One source for dashboard amounts and their individual record contributions.
+export function financialEntries(data,filters={}){
+ const within=financialRange(filters),entries=[];
+ for(const r of data.records){if(r.stage&&r.stage!=='completed')continue;if(filters.cardId&&r.cardId!==filters.cardId)continue;
+  if(['personal','family'].includes(r.outcome)&&r.useValue!==null)entries.push({recordId:r.id,cardId:r.cardId,kind:r.outcome,amount:r.useValue,date:r.outcomeDate,inRange:within(r.outcomeDate)});
+  if(r.outcome==='sold'&&r.received>0)entries.push({recordId:r.id,cardId:r.cardId,kind:'received',amount:r.received,date:r.receivedDate,inRange:within(r.receivedDate)});
  }
- for(const e of data.feeEntries||[])if(e.status==='paid'&&(!cardId||e.cardId===cardId)&&within(e.paidDate))feesPaid+=Math.round(e.amount*100);
+ return entries;
+}
+export function financialTotals(data,filters={}){
+ const within=financialRange(filters);let personal=0,family=0,received=0,feesPaid=0,undated=0;
+ for(const e of financialEntries(data,filters)){if(!e.date)undated++;if(!e.inRange)continue;const value=Math.round(e.amount*100);if(e.kind==='personal')personal+=value;else if(e.kind==='family')family+=value;else received+=value;}
+ for(const e of data.feeEntries||[])if(e.status==='paid'&&(!filters.cardId||e.cardId===filters.cardId)&&within(e.paidDate))feesPaid+=Math.round(e.amount*100);
  const gross=personal+family+received;
  return {personal:personal/100,family:family/100,received:received/100,feesPaid:feesPaid/100,realised:gross/100,net:(gross-feesPaid)/100,undated};
 }
