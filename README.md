@@ -144,3 +144,8 @@ First export a backup from your existing preview. Import it on the live website.
 After connection and initialisation, successful local saves queue an upload. Opening/focusing the app, returning online and a 30-second check retrieve remote changes. Offline edits remain local. Keep the page open until status says Synced; closing before upload leaves changes pending locally. If both copies change, automatic sync stops: export backups and deliberately choose the copy to retain in Cloud sync. This version detects conflicts rather than merging records. GitHub SHA checks reject stale writes. Every upload creates a private commit. Invalid/expired token or rate-limit errors retain local records and require retry/reconnection.
 
 Cloud data is validated before loading. Loading saves the prior local ledger under `perk-ledger.before-cloud-load`; replacing cloud data saves the previous remote copy locally under `perk-ledger.before-cloud-replace`. These recovery entries can be copied from browser storage; ordinary JSON exports remain the easiest backup. Token settings are not part of backups. No bank connection or background sync after closing the page.
+
+
+## Visual card selection
+
+Add/Edit card offers BOI, Canara, Utkarsh, BOB Bhoomi and Other picture options. A validated `cardType` ID keeps the artwork independent of nicknames and bank text. Older backups infer recognisable bank names once; unknown banks stay generic until selected. Card IDs, ownership and financial history are unchanged. Wallet tiles combine a small portrait image with bank name and last four digits, then a compact holder/action footer.

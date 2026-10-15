@@ -17,3 +17,37 @@
 .card-row-thumb.art-utkarsh img { width:110px; height:auto; max-width:none; max-height:none; flex-shrink:0; }
 [data-theme="festive"] .card-product-art { background-color:#fff2d9; border-color:#e9ceb1; }
 @media(max-width:480px) { .card-product-art { height:238px; } }
+
+/* Compact wallet: one artwork/identity area and a small utility footer. */
+.compact-wallet { border:1px solid var(--line); border-radius:22px; overflow:hidden; align-self:start; background:var(--surface,#fff); }
+.wallet-top { display:grid; grid-template-columns:110px minmax(0,1fr); gap:18px; align-items:center; padding:18px; min-height:192px; background:linear-gradient(125deg,#f0eafa,#fffaf0); }
+.wallet-art-slot { height:164px; min-width:0; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:12px; }
+.compact-wallet .card-product-art { border:0; border-radius:0; height:164px; width:110px; background:transparent; overflow:hidden; }
+.compact-wallet .card-product-art img { max-height:160px; max-width:108px; filter:drop-shadow(0 4px 5px #17102e28); }
+.compact-wallet .card-product-art.art-canara img { width:160px; max-width:none; max-height:none; }
+.compact-wallet .card-product-art.art-utkarsh img { width:384px; height:201px; max-width:none; max-height:none; left:calc(50% - 192px);top:calc(50% - 100.5px); }
+.wallet-identity { min-width:0; }
+.wallet-product-tag { display:block; font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.wallet-identity h3 { font-size:22px; line-height:1.2; margin:0 0 8px; overflow-wrap:anywhere; }
+.wallet-nickname { font-size:12px; color:var(--muted); margin:0 0 12px; overflow-wrap:anywhere; }
+.wallet-last4 { font:700 15px ui-monospace,monospace; margin:0; }
+.wallet-compact-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 18px; border-top:1px solid var(--line); }
+.wallet-holder { display:block; font-size:14px; font-weight:800; overflow-wrap:anywhere; }
+.wallet-benefit-count { display:block; font-size:11px; margin-top:3px; color:var(--muted); }
+.compact-wallet .card-fees { border-left:0; border-right:0; border-bottom:0; border-top:1px solid var(--line); border-radius:0; padding:12px 18px; }
+.card-picker { border:0; padding:0; margin:16px 0 24px; min-width:0; }
+.card-picker legend { font-weight:800; margin-bottom:12px; }
+.card-picker-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr));gap:10px; }
+.card-choice { position:relative; cursor:pointer; min-width:0; }
+.card-choice input { position:absolute; top:8px; left:8px; width:16px; height:16px; z-index:1; accent-color:#713be6; }
+.card-choice-preview { display:flex; flex-direction:column; align-items:center; gap:8px; border:2px solid var(--line);border-radius:14px;padding:28px 6px 10px; background:#fff; font-size:12px;text-align:center; }
+.card-choice input:checked + .card-choice-preview { border-color:#713be6;background:#f0eaff;box-shadow:0 0 0 1px #713be6; }
+.card-choice input:focus-visible + .card-choice-preview { outline:3px solid #a98bdd; outline-offset:3px; }
+.card-choice-art { display:flex; align-items:center; justify-content:center; position:relative; width:60px;height:90px;overflow:hidden; }
+.card-choice-art img { max-width:58px; max-height:88px; object-fit:contain; }
+.card-choice-art.art-canara img { width:88px;max-width:none;max-height:none;transform:rotate(90deg); }
+.card-choice-art.art-utkarsh img { position:absolute;width:212px;height:111px;max-width:none;max-height:none;left:calc(50% - 106px);top:calc(50% - 55.5px); }
+.generic-card-art { display:flex;align-items:center;justify-content:center;width:58px;height:88px;border-radius:9px;background:linear-gradient(135deg,#4b237a,#986ad4);color:white;font-size:30px; }
+[data-theme="festive"] .wallet-top { background:linear-gradient(125deg,#f5e5f3,#fff3d3); }
+[data-theme="festive"] .card-choice input:checked + .card-choice-preview { border-color:#a12c74;background:#fff0f6; }
+@media(max-width:600px){.card-picker-grid{grid-template-columns:repeat(3,minmax(0,1fr));}.wallet-top{gap:14px;padding:14px;}.wallet-identity h3{font-size:20px;}.wallet-compact-footer{padding:10px 14px;}}

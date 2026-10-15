@@ -1,3 +1,4 @@
+import {CARD_TYPES,inferCardType} from './card-art.mjs';
 import {stageOf,reservesClaim,validateWorkflow} from './stages.mjs';
 import {validateFees} from './fees.mjs';
 import { validateLegacy } from './legacy.mjs';
@@ -27,7 +28,7 @@ export function periodFor(rule, date) {
 import {uid} from './ids.mjs';
 export {uid};
 export function initialData() {
-  return { version: 5, feeSettings: [], feeEntries: [], feeReschedules: [], templates: [], preferences: defaultPreferences(), cards: [['BOI','Me'],['Canara Bank','Me'],['Utkarsh Bank','Me'],['Bank of Baroda','Me'],['Bank of Baroda','Mother']].map(([bank,holder])=>({id:uid(),bank,holder,nickname:`${holder === 'Mother' ? 'Mother’s' : 'My'} ${bank}`,last4:''})), benefits: [], periods: [], records: [] };
+  return { version: 5, feeSettings: [], feeEntries: [], feeReschedules: [], templates: [], preferences: defaultPreferences(), cards: [['BOI','Me'],['Canara Bank','Me'],['Utkarsh Bank','Me'],['Bank of Baroda','Me'],['Bank of Baroda','Mother']].map(([bank,holder])=>({id:uid(),bank,cardType:inferCardType({bank}),holder,nickname:`${holder === 'Mother' ? 'Mother’s' : 'My'} ${bank}`,last4:''})), benefits: [], periods: [], records: [] };
 }
 export function syncPeriods(data, date=today()) {
   for (const b of data.benefits) {
@@ -152,7 +153,8 @@ export function validateData(input) {
   const periods=base.periods.map((p,i)=>{const value=input.periods[i].value;if(value!==null&&!amount(value))throw Error('Invalid period estimate.');return {...p,allowance:input.periods[i].allowance,value};});
   for(const p of periods)if(records.filter(r=>r.periodId===p.id&&reservesClaim(r)).length>p.allowance)throw Error('Invalid backup: requests / vouchers exceed the period allowance.');
   const fees=validateFees({...input,cards:base.cards},eventIds);
-  return {...base,version:5,preferences,benefits,periods,records,templates:cleanTemplates,...fees};
+  const cards=base.cards.map((c,i)=>{const cardType=input.cards[i].cardType??inferCardType(c);if(!CARD_TYPES.some(t=>t.key===cardType))throw Error('Invalid card type.');return {...c,cardType};});
+  return {...base,cards,version:5,preferences,benefits,periods,records,templates:cleanTemplates,...fees};
 }
 export function loadData(storage) {const raw=storage.getItem(STORAGE_KEY);return raw===null?initialData():validateData(JSON.parse(raw));}
 export function saveData(storage,data) {
