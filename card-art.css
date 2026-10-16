@@ -37,7 +37,7 @@
 .compact-wallet .card-fees { border-left:0; border-right:0; border-bottom:0; border-top:1px solid var(--line); border-radius:0; padding:12px 18px; }
 .card-picker { border:0; padding:0; margin:16px 0 24px; min-width:0; }
 .card-picker legend { font-weight:800; margin-bottom:12px; }
-.card-picker-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr));gap:10px; }
+.card-picker-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr));gap:10px; }
 .card-choice { position:relative; cursor:pointer; min-width:0; }
 .card-choice input { position:absolute; top:8px; left:8px; width:16px; height:16px; z-index:1; accent-color:#713be6; }
 .card-choice-preview { display:flex; flex-direction:column; align-items:center; gap:8px; border:2px solid var(--line);border-radius:14px;padding:28px 6px 10px; background:#fff; font-size:12px;text-align:center; }
@@ -51,3 +51,5 @@
 [data-theme="festive"] .wallet-top { background:linear-gradient(125deg,#f5e5f3,#fff3d3); }
 [data-theme="festive"] .card-choice input:checked + .card-choice-preview { border-color:#a12c74;background:#fff0f6; }
 @media(max-width:600px){.card-picker-grid{grid-template-columns:repeat(3,minmax(0,1fr));}.wallet-top{gap:14px;padding:14px;}.wallet-identity h3{font-size:20px;}.wallet-compact-footer{padding:10px 14px;}}
+
+.card-choice-preview{height:100%;}

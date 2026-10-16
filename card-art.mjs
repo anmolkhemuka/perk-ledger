@@ -4,11 +4,13 @@ export const CARD_TYPES=[
  {key:'canara',bank:'Canara Bank',label:'Canara',src:'./assets/cards/canara-select.jpg',name:'Canara Bank RuPay Select Debit Card'},
  {key:'utkarsh',bank:'Utkarsh Bank',label:'Utkarsh',src:'./assets/cards/utkarsh-select.jpg',name:'Utkarsh Bank RuPay Select Debit Card'},
  {key:'bob',bank:'Bank of Baroda',label:'BOB Bhoomi',src:'./assets/cards/bob-bhoomi.png',name:'Bank of Baroda Bhoomi RuPay Select Debit Card'},
+ {key:'pnb',bank:'Punjab National Bank',label:'PNB Select Credit Card',src:'./assets/cards/pnb-select.png',name:'PNB Select Credit Card'},
  {key:'other',bank:'',label:'Other card',src:'',name:'Other card'}
 ];
 export function inferCardType(card){
  const bank=String(card?.bank||'').toLowerCase().replace(/[^a-z0-9]/g,'');
  if(bank==='boi'||bank.includes('bankofindia'))return 'boi';
+ if(bank==='pnb'||bank.includes('punjabnational'))return 'pnb';
  if(bank.includes('canara'))return 'canara';
  if(bank.includes('utkarsh'))return 'utkarsh';
  if(bank.includes('baroda')||bank==='bob'||bank.includes('bhoomi'))return 'bob';
